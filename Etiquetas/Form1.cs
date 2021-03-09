@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Data.Odbc;
-using GenCode128;
 using System.Globalization;
-//using System.ServiceModel.Web;
 using System.Net;
 using Newtonsoft.Json;
 using System.IO;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace Etiquetas
 {
@@ -21,33 +21,17 @@ namespace Etiquetas
         String error;
 
         int status;
-        Paciente detiq;
-        Paciente detiq2;
-        //HospubDados dados = new HospubDados();
-        //string conStr = "DSN=hospub-server;Uid=;Pwd=;";//string de conexão com o banco de dados
-
-
+  
         public Form1()
         {
             InitializeComponent();
             status = 0;
             error = "";
-            printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);
-            printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);
-            rbEtiqueta_8.Checked = true;
-        }
-        public class Paciente
-        {
-            public int cd_prontuario { get; set; }
-            public string nm_nome { get; set; }
-            public int cd_rf_matricula { get; set; }
-            public string in_sexo { get; set; }
-            public string dt_data_nascimento { get; set; }
-            public int nr_idade { get; set; }
-            public int nr_ddd_fone { get; set; }
-            public int nr_fone { get; set; }
+            printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
+            printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
             
         }
+      
         private void btImprimir_Click(object sender, EventArgs e)
         {
             btImprimir.Enabled = false;
@@ -72,52 +56,26 @@ namespace Etiquetas
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            try
-            {
+           
 
-                int rh = Convert.ToInt32(txbRh.Text);
-                //detiq = dados.getDados(be);
-                string url = "http://10.48.21.64:5000/hspmsgh-api/pacientes/paciente/" + rh;
-                WebRequest request = WebRequest.Create(url);
+            
+            
                 try
                 {
-                    using (var twitpicResponse = (HttpWebResponse)request.GetResponse())
-                    {
-                        using (var reader = new StreamReader(twitpicResponse.GetResponseStream()))
-                        {
-                            JsonSerializer json = new JsonSerializer();
-                            var objText = reader.ReadToEnd();
-                            detiq = JsonConvert.DeserializeObject<Paciente>(objText);
-
-                        }
-                    }
+                    
                   
                   
-                        if (TesteObito(detiq.cd_prontuario.ToString()))
-                        {
-                            MessageBox.Show("Este RH é de um paciente com ÓBITO!");
-                        }
+                    
                         PrintDialog printDialog1 = new PrintDialog();
                         printDialog1.Document = printDocument1;
                         DialogResult result = printDialog1.ShowDialog();
 
                         if (result == DialogResult.OK)
                         {
-                            if (rbEtiqueta_6.Checked == true)
-                            {
-                                printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);
-                                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);
-                            }
-                            else if (rbEtiqueta_8.Checked == true)
-                            {
-                                printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1200);
-                                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1200);
-
-                            }
-                            printDocument1.Print();
                            
-
-
+                            printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
+                            printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
+                            printDocument1.Print();
                         }
                    
 
@@ -125,489 +83,141 @@ namespace Etiquetas
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Número de RH inexistente! " + ex.Message);
+                    MessageBox.Show(ex.Message);
                     status = 1;
 
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Número de RH inexistente! " + ex.Message);
-                status = 1;
-
-            }
-        }
-        public bool TesteObito(string rh)
-        { 
-          
-            bool bstatus = false;
-
-            // int be = Convert.ToInt32(txbRh.Text);
-                //detiq = dados.getDados(be);
-                string url = "http://10.48.21.64:5000/hspmsgh-api/pacientes/paciente/" + rh;
-                WebRequest request = WebRequest.Create(url);
-
-                using (var twitpicResponse = (HttpWebResponse)request.GetResponse())
-                {
-                    using (var reader = new StreamReader(twitpicResponse.GetResponseStream()))
-                    {
-                        JsonSerializer json = new JsonSerializer();
-                        var objText = reader.ReadToEnd();
-                        detiq2 = JsonConvert.DeserializeObject<Paciente>(objText);
-
-                    }
-                }
-                    if (detiq2.nm_nome.Contains("OBITO"))
-                        bstatus = true;
-           
         
-            return bstatus;
-        }
+     
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             DateTime data = DateTime.Now;
             
-          
-
-            if (rbEtiqueta_6.Checked == true)
-            {
-
-                e.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);//900 é a largura da página
-                printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);
-                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1000);
+                e.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);//900 é a largura da página
+                printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
+                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2",197, 118);
                 using (Graphics g = e.Graphics)
                 {
                     using (Font fnt = new Font("Arial", 12))
                     {
 
-                        int startXEsquerda = 50;
-                        int starty = 10;//distancia das linhas
-                        int pulaEtiq = 167;
-                        
-                        if (detiq.nm_nome.Length > 26)
-                        {
-                            string nomep1 = detiq.nm_nome;
-                            int contN = nomep1.Length;
-                            string nomep = detiq.nm_nome.Substring(0, 26);
-                            string nomeCompos = nomep1.Substring(26);
-                            
+                        int startXEsquerda = 2;
+                        int starty = 2;//distancia das linhas
+                        // Create two images.
+                        Image image1 = Image.FromFile("C://Users/h013026/Downloads/HSPM_LOGO.jpg");
+                        var newImage = ResizeImage(image1, 35, 20);
+                        // Get a PropertyItem from image1.
+                        //PropertyItem propItem = image1.GetPropertyItem(20624);
 
+                        // Change the ID of the PropertyItem.
+                        //propItem.Id = 20625;
+
+                        // Set the PropertyItem for image2.
+                        //image1.SetPropertyItem(propItem);
+                       // RectangleF srcRect = new RectangleF(100.0F, 100.0F, 100.0F, 100.0F);
+                        // GraphicsUnit units = GraphicsUnit.Millimeter;
+                        // Draw the image.
+                        e.Graphics.DrawImage(newImage, 5.0F, 0.0F);
+
+
+
+                         // Create image.
+                       // Image newImage = Image.FromFile("C://Users/h013026/Downloads/HSPM_LOGO.jpg");
+             
+                        // Create coordinates for upper-left corner of image.
+                       // float x = 0.0F;
+                       /// float y = 0.0F;
+                                 
+                        // Create rectangle for source image.
+                       // RectangleF srcRect = new RectangleF(100.0F, 100.0F, 100.0F, 100.0F);
+                       // GraphicsUnit units = GraphicsUnit.Pixel;
+                        //         
+                        // Draw image to screen.
+                        //e.Graphics.DrawImage(newImage, x, y, srcRect, units);
+
+
+                        //g.DrawImage(image1, new Rectangle(10, 10, 200, 200));
+
+                    
+
+                                       
+                       //newImage.Save("c:\\newImage.png", ImageFormat.Png);
+
+                        Pen blackPen = new Pen(Color.Black, 1);
+
+                        // Create location and size of rectangle.
+                        int x = 4;
+                        int y = starty + 40;
+                        int width = 7;
+                        int height = 7;
+
+                        // Draw rectangle to screen.
+                        e.Graphics.DrawRectangle(blackPen, x, y, width, height);
+
+
+                        g.DrawString("Clínica de Alergia" , new Font("Sans Serif", 8, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 45, starty );
+                        g.DrawString("Paciente: " + txbRh.Text, new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda , starty + 24);
+
+
+                        g.DrawString("D. pteromyssinus + B. Tropicalis + Ext. Bact.", new Font("Sans Serif", 5, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 40);
+
+
+                        x = 4;
+                        y = starty + 56;
+                        width = 7;
+                        height = 7;
+
+                        // Draw rectangle to screen.
+                        e.Graphics.DrawRectangle(blackPen, x, y, width, height);
+                        g.DrawString("Insetos            " + "Diluição:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 56);
+                        g.DrawString("Volume: 7,0             " + "Lote:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
+                        g.DrawString("Fab.: ...../...../....." + "    Val.: ...../....../.....", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 98);
+
+                        System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+                        drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
+                        g.DrawString("Conservar 2º C - 8º C ", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, 180, 5, drawFormat);
                           
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone , new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                           
-                            g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-         
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                           
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                       
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                         
-                           
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                              g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                        }
-                        else
-                        {
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                           
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
 
                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
+                           
                         }
                     }
                 }
-            }
-            else if (rbEtiqueta_8.Checked == true)
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
             {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                e.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1200);//900 é a largura da página
-                printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1200);
-                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 400, 1200);
-                using (Graphics g = e.Graphics)
+                using (var wrapMode = new ImageAttributes())
                 {
-                    using (Font fnt = new Font("Arial", 12))
-                    {
-
-                        int startXEsquerda = 40;
-                        int starty = 10;//distancia das linhas
-                        int pulaEtiq = 150;
-                        
-
-                        if (detiq.nm_nome.Length > 26)
-                        {
-                            string nomep1 = detiq.nm_nome;
-                            int contN = nomep1.Length;
-                            string nomep = detiq.nm_nome.Substring(0, 26);
-                            string nomeCompos = nomep1.Substring(26);
-                            
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                      
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                           
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                        
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + nomep, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("            " + nomeCompos, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 104);
-
-
-                        }
-                        else
-                        {
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone + " " + detiq.nr_fone , new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                        
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                           
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                            
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                         
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                            starty += pulaEtiq;
-
-                            //g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 6);
-                          
-                                g.DrawString("RH: " + txbRh.Text + "       RF: " + detiq.cd_rf_matricula, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 7);
-
-                             
-                            g.DrawString("Nome: " + detiq.nm_nome, new Font("Arial", 10, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
-                            g.DrawString("Nasc: " + detiq.dt_data_nascimento + " Idade: " + detiq.nr_idade + " Sexo: " + detiq.in_sexo, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
-                            g.DrawString("Telefone: " + detiq.nr_ddd_fone +" " + detiq.nr_fone, new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 56);
-                                g.DrawString("Clinica: ONCO/HEMATO/QUIMIO", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                            g.DrawString("", new Font("Arial", 10, FontStyle.Regular), System.Drawing.Brushes.Black, startXEsquerda, starty + 88);
-
-                        }
-                    }
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
                 }
             }
-            
+
+            return destImage;
         }
+
 
         private void txbRh_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -622,4 +232,5 @@ namespace Etiquetas
 
      
     }
+
 }
