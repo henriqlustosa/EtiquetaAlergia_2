@@ -32,3 +32,4 @@ C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiq
 C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiquetas\obj\x86\Release\Etiquetas.Form1.resources
 C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiquetas\obj\x86\Release\Etiquetas.Properties.Resources.resources
 C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiquetas\obj\x86\Release\Etiquetas.csproj.GenerateResource.Cache
+C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiquetas\bin\x86\Release\Files\HSPM_LOGO.jpg

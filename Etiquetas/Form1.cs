@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Data.Odbc;
-using System.Globalization;
 using System.Net;
-using Newtonsoft.Json;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -106,7 +100,8 @@ namespace Etiquetas
                         int startXEsquerda = 2;
                         int starty = 2;//distancia das linhas
                         // Create two images.
-                        Image image1 = Image.FromFile("C://Users/h013026/Downloads/HSPM_LOGO.jpg");
+                       
+                        Image image1 = Image.FromFile("./Files/HSPM_LOGO.jpg");
                         var newImage = ResizeImage(image1, 35, 20);
                         // Get a PropertyItem from image1.
                         //PropertyItem propItem = image1.GetPropertyItem(20624);
@@ -177,7 +172,7 @@ namespace Etiquetas
 
                         System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
                         drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
-                        g.DrawString("Conservar 2º C - 8º C ", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, 180, 5, drawFormat);
+                        g.DrawString("Conservar 2º C - 8º C ", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, 175, 5, drawFormat);
                           
 
                            

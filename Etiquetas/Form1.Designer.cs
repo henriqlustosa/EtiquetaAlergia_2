@@ -53,9 +53,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(23, 81);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 13);
+            this.label1.Size = new System.Drawing.Size(49, 13);
             this.label1.TabIndex = 11;
-            this.label1.Text = "Nome do Paciente";
+            this.label1.Text = "Paciente";
             // 
             // txbRh
             // 
@@ -91,9 +91,9 @@
             this.lbTitulo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTitulo.Location = new System.Drawing.Point(104, 22);
             this.lbTitulo.Name = "lbTitulo";
-            this.lbTitulo.Size = new System.Drawing.Size(242, 20);
+            this.lbTitulo.Size = new System.Drawing.Size(195, 20);
             this.lbTitulo.TabIndex = 0;
-            this.lbTitulo.Text = "Sistema de Etiquetas Internação";
+            this.lbTitulo.Text = "Aplicação Etiqueta Alergia";
             // 
             // Form1
             // 
