@@ -26,3 +26,12 @@ C:\Users\h013026\Documents\Visual Studio 2008\Projects\EtiquetasQuimio\Etiquetas
 C:\Users\h013026\Documents\Visual Studio 2008\Projects\EtiquetasQuimio\Etiquetas\bin\x86\Debug\GenCode128.pdb
 C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiquetas\obj\x86\Debug\Etiquetas.exe
 C:\Users\h013026\OneDrive - Default Directory\Workspace_C#\EtiquetasAlergia\Etiquetas\obj\x86\Debug\Etiquetas.pdb
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.exe
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.pdb
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\bin\x86\Debug\Files\HSPM_LOGO.jpg
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\bin\x86\Debug\Etiquetas.exe
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\bin\x86\Debug\Etiquetas.pdb
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\ResolveAssemblyReference.cache
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.Form1.resources
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.Properties.Resources.resources
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.csproj.GenerateResource.Cache

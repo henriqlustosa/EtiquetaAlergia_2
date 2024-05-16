@@ -149,14 +149,14 @@ namespace Etiquetas
                         int height = 7;
 
                         // Draw rectangle to screen.
-                        e.Graphics.DrawRectangle(blackPen, x, y, width, height);
+                        //e.Graphics.DrawRectangle(blackPen, x, y, width, height);
 
 
                         g.DrawString("Clínica de Alergia" , new Font("Sans Serif", 8, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 45, starty );
                         g.DrawString("Paciente: " + txbRh.Text, new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda , starty + 24);
 
 
-                        g.DrawString("D. pteromyssinus + B. Tropicalis + Ext. Bact.", new Font("Sans Serif", 5, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 40);
+                        g.DrawString("Candida + Corynebacterium Paruum", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda , starty + 40);
 
 
                         x = 4;
@@ -165,8 +165,8 @@ namespace Etiquetas
                         height = 7;
 
                         // Draw rectangle to screen.
-                        e.Graphics.DrawRectangle(blackPen, x, y, width, height);
-                        g.DrawString("Insetos            " + "Diluição:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 56);
+                       // e.Graphics.DrawRectangle(blackPen, x, y, width, height);
+                       // g.DrawString("Insetos            " + "Diluição:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 56);
                         g.DrawString("Volume: 7,0             " + "Lote:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
                         g.DrawString("Fab.: ...../...../....." + "    Val.: ...../....../.....", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 98);
 
