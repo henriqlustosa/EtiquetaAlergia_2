@@ -7,15 +7,17 @@ using System.Net;
 using System.IO;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using Newtonsoft.Json;
 
 namespace Etiquetas
 {
     public partial class Form1 : Form
     {
+        Paciente paciente;
         String error;
-
+        private const int DesiredLength = 12; // Desired length of the text
         int status;
-  
+
         public Form1()
         {
             InitializeComponent();
@@ -23,9 +25,16 @@ namespace Etiquetas
             error = "";
             printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
             printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
-            
+            this.txbRh.Focus();
+            txbRh.TabIndex = 0;
+
+            txbVolume.TabIndex = 1;
+            txbLote.TabIndex = 2;
+            txbFabricacao.TabIndex = 3;
+            txbValidade.TabIndex = 4;
+            btImprimir.TabIndex = 5;
         }
-      
+
         private void btImprimir_Click(object sender, EventArgs e)
         {
             btImprimir.Enabled = false;
@@ -36,7 +45,7 @@ namespace Etiquetas
         }
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-           btImprimir.Enabled = true;
+            btImprimir.Enabled = true;
             if (status == 1)
                 lblError.Text = error;
             else
@@ -44,54 +53,101 @@ namespace Etiquetas
             this.txbRh.ResetText();
             this.txbRh.Enabled = true;
             this.txbRh.Focus();
-            this.txbRh.Text = "";
-         
-        }
 
+
+            ClearAllTextBoxes(this);
+
+            ClearAllMaskedTextBoxes(this);
+
+        }
+        public class Paciente
+        {
+
+            public string nm_nome { get; set; }
+
+
+
+        }
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-           
 
-            
-            
-                try
+
+
+
+            try
+            {
+
+
+
+
+                PrintDialog printDialog1 = new PrintDialog();
+                printDialog1.Document = printDocument1;
+                DialogResult result = printDialog1.ShowDialog();
+
+                if (result == DialogResult.OK)
                 {
-                    
-                  
-                  
-                    
-                        PrintDialog printDialog1 = new PrintDialog();
-                        printDialog1.Document = printDocument1;
-                        DialogResult result = printDialog1.ShowDialog();
 
-                        if (result == DialogResult.OK)
-                        {
-                           
-                            printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
-                            printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
-                            printDocument1.Print();
-                        }
-                   
-
-
+                    printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
+                    printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
+                    printDocument1.Print();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    status = 1;
 
-                }
+
+
             }
-        
-     
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                status = 1;
+
+            }
+        }
+
+
 
         private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
         {
             DateTime data = DateTime.Now;
-            
+            string rh = txbRh.Text;
+            //detiq = dados.getDados(be);
+            string text = txbVolume.Text;
+            if (text.Length < DesiredLength)
+            {
+                text = text.PadRight(DesiredLength); // Pad the text with spaces
+            }
+            else if (text.Length > DesiredLength)
+            {
+                text = text.Substring(0, DesiredLength); // Truncate the text to the desired length
+            }
+            string url = "http://10.48.21.64:5003/hspmsgh-api/pacientes/paciente/" + rh;
+            WebRequest request = WebRequest.Create(url);
+            try
+            {
+                using (var twitpicResponse = (HttpWebResponse)request.GetResponse())
+                {
+                    using (var reader = new StreamReader(twitpicResponse.GetResponseStream()))
+                    {
+                        JsonSerializer json = new JsonSerializer();
+                        var objText = reader.ReadToEnd();
+                        paciente = JsonConvert.DeserializeObject<Paciente>(objText);
+
+                    }
+                }
+
+                string[] nameParts = paciente.nm_nome.Split(' ');
+                for (int i = 1; i < nameParts.Length - 1; i++)
+                {
+                    if (!string.IsNullOrEmpty(nameParts[i]))
+                    {
+                        nameParts[i] = nameParts[i][0] + ".";
+                    }
+                }
+                // Join the parts back together
+                string abbreviatedName = string.Join(" ", nameParts);
+
                 e.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);//900 é a largura da página
                 printDocument1.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
-                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2",197, 118);
+                printDialog1.PrinterSettings.DefaultPageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom2", 197, 118);
                 using (Graphics g = e.Graphics)
                 {
                     using (Font fnt = new Font("Arial", 12))
@@ -100,7 +156,7 @@ namespace Etiquetas
                         int startXEsquerda = 2;
                         int starty = 2;//distancia das linhas
                         // Create two images.
-                       
+
                         Image image1 = Image.FromFile("./Files/HSPM_LOGO.jpg");
                         var newImage = ResizeImage(image1, 35, 20);
                         // Get a PropertyItem from image1.
@@ -111,23 +167,23 @@ namespace Etiquetas
 
                         // Set the PropertyItem for image2.
                         //image1.SetPropertyItem(propItem);
-                       // RectangleF srcRect = new RectangleF(100.0F, 100.0F, 100.0F, 100.0F);
+                        // RectangleF srcRect = new RectangleF(100.0F, 100.0F, 100.0F, 100.0F);
                         // GraphicsUnit units = GraphicsUnit.Millimeter;
                         // Draw the image.
                         e.Graphics.DrawImage(newImage, 5.0F, 0.0F);
 
 
 
-                         // Create image.
-                       // Image newImage = Image.FromFile("C://Users/h013026/Downloads/HSPM_LOGO.jpg");
-             
+                        // Create image.
+                        // Image newImage = Image.FromFile("C://Users/h013026/Downloads/HSPM_LOGO.jpg");
+
                         // Create coordinates for upper-left corner of image.
-                       // float x = 0.0F;
-                       /// float y = 0.0F;
-                                 
+                        // float x = 0.0F;
+                        /// float y = 0.0F;
+
                         // Create rectangle for source image.
-                       // RectangleF srcRect = new RectangleF(100.0F, 100.0F, 100.0F, 100.0F);
-                       // GraphicsUnit units = GraphicsUnit.Pixel;
+                        // RectangleF srcRect = new RectangleF(100.0F, 100.0F, 100.0F, 100.0F);
+                        // GraphicsUnit units = GraphicsUnit.Pixel;
                         //         
                         // Draw image to screen.
                         //e.Graphics.DrawImage(newImage, x, y, srcRect, units);
@@ -135,10 +191,10 @@ namespace Etiquetas
 
                         //g.DrawImage(image1, new Rectangle(10, 10, 200, 200));
 
-                    
 
-                                       
-                       //newImage.Save("c:\\newImage.png", ImageFormat.Png);
+
+
+                        //newImage.Save("c:\\newImage.png", ImageFormat.Png);
 
                         Pen blackPen = new Pen(Color.Black, 1);
 
@@ -152,11 +208,11 @@ namespace Etiquetas
                         //e.Graphics.DrawRectangle(blackPen, x, y, width, height);
 
 
-                        g.DrawString("Clínica de Alergia" , new Font("Sans Serif", 8, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 45, starty );
-                        g.DrawString("Paciente: " + txbRh.Text, new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda , starty + 24);
+                        g.DrawString("Clínica de Alergia", new Font("Sans Serif", 8, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 45, starty);
+                        g.DrawString("Paciente: " + abbreviatedName, new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 24);
 
 
-                        g.DrawString("Candida + Corynebacterium Paruum", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda , starty + 40);
+                        g.DrawString("Candida + Corynebacterium Paruum", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 40);
 
 
                         x = 4;
@@ -165,22 +221,27 @@ namespace Etiquetas
                         height = 7;
 
                         // Draw rectangle to screen.
-                       // e.Graphics.DrawRectangle(blackPen, x, y, width, height);
-                       // g.DrawString("Insetos            " + "Diluição:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 56);
-                        g.DrawString("Volume: 7,0             " + "Lote:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
-                        g.DrawString("Fab.: ...../...../....." + "    Val.: ...../....../.....", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 98);
+                        // e.Graphics.DrawRectangle(blackPen, x, y, width, height);
+                        // g.DrawString("Insetos            " + "Diluição:........................", new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda + 10, starty + 56);
+                        g.DrawString("Volume: " + text + "Lote: " + txbLote.Text, new Font("Sans Serif", 6, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 72);
+                        g.DrawString("Fab.: " + txbFabricacao.Text + "    Val.: " + txbValidade.Text, new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, startXEsquerda, starty + 98);
 
                         System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
                         drawFormat.FormatFlags = StringFormatFlags.DirectionVertical;
                         g.DrawString("Conservar 2º C - 8º C ", new Font("Sans Serif", 7, FontStyle.Bold), System.Drawing.Brushes.Black, 175, 5, drawFormat);
-                          
 
-                           
-                           
-                        }
+
+
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                status = 1;
 
+            }
+        }
         /// <summary>
         /// Resize the image to the specified width and height.
         /// </summary>
@@ -214,18 +275,44 @@ namespace Etiquetas
         }
 
 
-        private void txbRh_KeyPress(object sender, KeyPressEventArgs e)
-        {
-             
-            if (e.KeyChar == (char)Keys.Enter)
-            {
 
-                btImprimir_Click( sender,  e);
+
+        private void ClearAllTextBoxes(Control control)
+        {
+            foreach (Control c in control.Controls)
+            {
+                if (c is TextBox)
+                {
+                    ((TextBox)c).Text = string.Empty;
+                }
+                else
+                {
+                    ClearAllTextBoxes(c); // Recursively call for nested controls
+                }
 
             }
         }
+        private void ClearAllMaskedTextBoxes(Control control)
+        {
+            foreach (Control c in control.Controls)
+            {
+                if (c is MaskedTextBox)
+                {
+                    ((MaskedTextBox)c).Text = string.Empty;
+                }
+                else
+                {
+                    ClearAllMaskedTextBoxes(c); // Recursively call for nested controls
+                }
+            }
+        }
 
-     
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 
 }

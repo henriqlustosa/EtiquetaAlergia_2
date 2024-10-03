@@ -35,3 +35,6 @@ G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAle
 G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.Form1.resources
 G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.Properties.Resources.resources
 G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\obj\x86\Debug\Etiquetas.csproj.GenerateResource.Cache
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\bin\x86\Debug\Newtonsoft.Json.Compact.dll
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\bin\x86\Debug\Newtonsoft.Json.Compact.pdb
+G:\OneDrive - Default Directory\OneDrive - rede.sp\Workspace_Alergia\EtiquetaAlergia\Etiquetas\bin\x86\Debug\Newtonsoft.Json.Compact.xml
